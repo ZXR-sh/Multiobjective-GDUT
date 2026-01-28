@@ -1,5 +1,4 @@
 
-
 Multiobjective-GDUT/
 
 ├── core/                     # 核心算法实现
@@ -34,5 +33,3 @@ Multiobjective-GDUT/
 │   ├── CrowdingDistance.m    # 拥挤距离计算
 
 ├── tests/                    # 测试用例
-
-└── README.md                 # 项目概述和快速入门
