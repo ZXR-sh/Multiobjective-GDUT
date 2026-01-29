@@ -76,10 +76,42 @@ classdef module_test < handle
             
             % Initialization
             obj.cb_filter([],[],2);
-            obj.app.listA(1).Value = 'NSGAII';
-            obj.app.listA(2).Value = 'DTLZ2';
-            GUI.UpdateAlgProPara(obj.GUI.app.figure,obj.app.listA(1),obj.app.listB,'ALGORITHM',1);
-            GUI.UpdateAlgProPara(obj.GUI.app.figure,obj.app.listA(2),obj.app.listB,'PROBLEM',-1);
+            itemsA = obj.app.listA(1).Items;
+            if ischar(itemsA)
+                itemsA = cellstr(itemsA);
+            elseif isstring(itemsA)
+                itemsA = cellstr(itemsA);
+            end
+            if ~isempty(itemsA)
+                if any(strcmp(itemsA,'NSGAII'))
+                    obj.app.listA(1).Value = 'NSGAII';
+                else
+                    obj.app.listA(1).Value = itemsA{1 + (numel(itemsA) > 1)};
+                end
+            else
+                obj.app.listA(1).Value = '';
+            end
+            itemsP = obj.app.listA(2).Items;
+            if ischar(itemsP)
+                itemsP = cellstr(itemsP);
+            elseif isstring(itemsP)
+                itemsP = cellstr(itemsP);
+            end
+            if ~isempty(itemsP)
+                if any(strcmp(itemsP,'DTLZ2'))
+                    obj.app.listA(2).Value = 'DTLZ2';
+                else
+                    obj.app.listA(2).Value = itemsP{1 + (numel(itemsP) > 1)};
+                end
+            else
+                obj.app.listA(2).Value = '';
+            end
+            if ~isempty(obj.app.listA(1).Value)
+                GUI.UpdateAlgProPara(obj.GUI.app.figure,obj.app.listA(1),obj.app.listB,'ALGORITHM',1);
+            end
+            if ~isempty(obj.app.listA(2).Value)
+                GUI.UpdateAlgProPara(obj.GUI.app.figure,obj.app.listA(2),obj.app.listB,'PROBLEM',-1);
+            end
         end
     end
     methods(Access = private)

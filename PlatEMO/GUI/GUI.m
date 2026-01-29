@@ -120,18 +120,37 @@ classdef GUI < handle
             obj.metList = obj.readList2('Metrics',[LabelStr,'min','max']);
         end
         function List = readList2(obj,folder,LabelStr)
-            List    = {};
+            List    = cell(0,3);
             Folders = split(genpath(fullfile(fileparts(mfilename('fullpath')),'..',folder)),pathsep);
-            for i = 1 : length(Folders) - 1 
+            for i = 1 : length(Folders) - 1
                 Files = what(Folders{i});
                 Files = Files.m;
                 for j = 1 : length(Files)
                     try
-                        f = fopen(Files{j});
-                        fgetl(f);
-                        str = regexprep(fgetl(f),'^\s*%\s*','','once');
+                        f = fopen(fullfile(Folders{i},Files{j}));
+                        if f < 0
+                            continue;
+                        end
+                        head = cell(1,6);
+                        for h = 1 : numel(head)
+                            head{h} = fgetl(f);
+                            if ~ischar(head{h})
+                                head = head(1:h-1);
+                                break;
+                            end
+                        end
                         fclose(f);
-                        labelstr = regexp(str,'(?<=<).*?(?=>)','match');
+                        tagLine = '';
+                        for h = 1 : numel(head)
+                            if ~isempty(regexp(head{h},'^\s*%\s*<','once'))
+                                tagLine = regexprep(head{h},'^\s*%\s*','','once');
+                                break;
+                            end
+                        end
+                        if isempty(tagLine)
+                            continue;
+                        end
+                        labelstr = regexp(tagLine,'(?<=<).*?(?=>)','match');
                         if ~isempty(labelstr)
                             label = false(length(labelstr),length(LabelStr));
                             for k = 1 : length(labelstr)
@@ -239,7 +258,7 @@ classdef GUI < handle
             for i = 1 : 4 : length(varargin)
                 [~,drop,~,list] = deal(varargin{i:i+3});
                 drop.UserData   = find(cellfun(func,list(:,1)));
-                drop.Items      = flip([unique(list(drop.UserData,3));'All year']);
+                drop.Items      = flip([unique(list(drop.UserData,3));{'All year'}]);
             end
             GUI.UpdateAlgProListYear(varargin{:});
         end
@@ -248,13 +267,13 @@ classdef GUI < handle
             for i = 1 : 4 : length(varargin)
                 [listBox,drop,label,list] = deal(varargin{i:i+3});
                 if strcmp(drop.Value,'All year')
-                    listBox.Items = ['(Open File)';list(drop.UserData,2)];
-                    listBox.Value = {};
+                    listBox.Items = [{'(Open File)'};list(drop.UserData,2)];
+                    listBox.Value = listBox.Items{1};
                     label.Text    = sprintf('%d / %d',length(drop.UserData),size(list,1));
                 else
                     index = ismember(list(drop.UserData,3),drop.Value);
-                    listBox.Items = ['(Open File)';list(drop.UserData(index),2)];
-                    listBox.Value = {};
+                    listBox.Items = [{'(Open File)'};list(drop.UserData(index),2)];
+                    listBox.Value = listBox.Items{1};
                     label.Text    = sprintf('%d / %d',length(drop.UserData(index)),size(list,1));
                 end
             end
