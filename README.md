@@ -8,9 +8,10 @@ Multiobjective-GDUT/
     │   ├── Multi-objective optimization/
     │   │   └── MOEADM2M/
     │   │       ├── MOEADM2M.m
-    │   │       ├── Associate.m
+    │   │       ├── associate.m
     │   │       ├── Operator.m
-    │   │       └── uniformPoint.m
+    │   │       └── selectForSubproblem.m
+    │   ├── Utility functions/
     │   └── ALGORITHM.m
     ├── GUI/
     ├── Metrics/
