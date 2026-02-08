@@ -1,3 +1,4 @@
+% 文件: f:\Multiobiective\Multiobjective-GDUT\PlatEMO\Algorithms\Multi-objective optimization\MOEADM2M\MOEADM2M.m
 classdef MOEADM2M < ALGORITHM
 % <2014> <multi> <real/integer>
 % MOEA/D based on MOP to MOP
@@ -17,18 +18,19 @@ classdef MOEADM2M < ALGORITHM
 %--------------------------------------------------------------------------
 
     methods
+        function obj = MOEADM2M(varargin)
+            obj@ALGORITHM(varargin{:});
+        end
+        
         function main(Algorithm,Problem)
-            %% Parameter setting
             K = Algorithm.ParameterSet(100);
 
-            %% Generate random population
             [W,K]      = UniformPoint(K,Problem.M);
             Problem.N  = ceil(Problem.N/K)*K;
             S          = Problem.N/K;
             Population = Problem.Initialization();
             Population = associate(Population,W,S);
 
-            %% Optimization
             while Algorithm.NotTerminated(Population)
                 MatingPoolLocal      = randi(S,S,K) + repmat(0:S:S*(K-1),S,1);
                 MatingPoolGlobal     = randi(Problem.N,1,Problem.N);

@@ -1,13 +1,21 @@
 function Population = associate(Population,W,S)
+% Allocation of solutions to subproblems
+
     K = size(W,1);
 
+    %% Allocation of solutions to subproblems
+    % Transformation
     [~,transformation] = max(1-pdist2(Population.objs,W,'cosine'),[],2);
     partition = zeros(S,K);
+    % Allocation
     for i = 1 : K
         current = find(transformation==i);
         if length(current) < S
+            % Randomly select solutions and join to the current subproblem
             current = [current;randi(length(Population),S-length(current),1)];
         elseif length(current) > S
+            % Delete solutions from the current subproblem by non-dominated
+            % sorting and crowding distance
             [FrontNo,MaxFNo] = NDSort(Population(current).objs,S);
             Last = find(FrontNo==MaxFNo);
             CrowdDis = CrowdingDistance(Population(current(Last)).objs);
